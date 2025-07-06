@@ -1,56 +1,35 @@
+from ai_signal import get_ai_signal
+from execute_trader import place_order
 import requests
-import random
-import time
 
-# توصية الذكاء الاصطناعي (BUY أو SELL)
-ai_signal = random.choice(["BUY", "SELL"])
+BOT_TOKEN = "8067398934:AAGvw2oAS-0Y5zgDD-1QUI8EbZppWJIb_NQ"
+CHAT_ID = "5956821181"
 
-# معلومات الحساب
-ACCOUNT_ID = "5217824"
-ACCESS_TOKEN = "aeb_Sz7NOg_dGtjwV9hfEf2jazhk10kGPKyApuXmE5w"
+def send_telegram(msg):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    requests.post(url, data={"chat_id": CHAT_ID, "text": msg})
 
-# إعدادات الصفقة
-SYMBOL = "BTCUSD"
-VOLUME_PER_100 = 0.03  # 0.03 لوت لكل 100$
-STOP_LOSS_PIPS = 20
-TAKE_PROFIT_PIPS = 40
+def main():
+    signal = get_ai_signal()
+    msg = f"""📡 توصية سكالبينغ تلقائية 🔥
 
-# احصل على سعر السوق الحالي من Spotware OpenAPI
-def get_market_price():
-    url = f"https://api.spotware.com/connect/trading/accounts/{ACCOUNT_ID}/symbols/{SYMBOL}/price"
-    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-    response = requests.get(url, headers=headers)
-    data = response.json()
-    return float(data["ask"]) if ai_signal == "BUY" else float(data["bid"])
+🔹 الزوج: {signal['symbol']}
+🔹 الاتجاه: {signal['signal']}
+🔹 الهدف: {signal['take_profit']} نقطة
+🔹 وقف الخسارة: {signal['stop_loss']} نقطة
+🔹 الحجم: {signal['lot_size']} لوت
 
-# تنفيذ الصفقة
-def execute_trade():
-    price = get_market_price()
-    volume = int(100000 * VOLUME_PER_100)  # حجم اللوت
+🚀 تنفيذ مباشر الآن...
+"""
+    send_telegram(msg)
+    result = place_order(
+        symbol=signal['symbol'],
+        side=signal['signal'],
+        volume=signal['lot_size'],
+        sl_pips=signal['stop_loss'],
+        tp_pips=signal['take_profit']
+    )
+    send_telegram(f"✅ تنفيذ الصفقة: {result}")
 
-    sl = price - STOP_LOSS_PIPS * 0.1 if ai_signal == "BUY" else price + STOP_LOSS_PIPS * 0.1
-    tp = price + TAKE_PROFIT_PIPS * 0.1 if ai_signal == "BUY" else price - TAKE_PROFIT_PIPS * 0.1
-
-    order_data = {
-        "accountId": ACCOUNT_ID,
-        "symbol": SYMBOL,
-        "volume": volume,
-        "type": "MARKET",
-        "side": ai_signal,
-        "stopLoss": round(sl, 2),
-        "takeProfit": round(tp, 2),
-        "label": "AI Scalping Bot"
-    }
-
-    url = f"https://api.spotware.com/connect/trading/orders"
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(url, json=order_data, headers=headers)
-    print("تم إرسال الصفقة:", response.status_code, response.text)
-
-# تشغيل البوت
-print("توصية الذكاء الاصطناعي:", ai_signal)
-execute_trade()
+if __name__ == "__main__":
+    main()
