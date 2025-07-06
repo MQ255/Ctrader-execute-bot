@@ -1,11 +1,11 @@
 import random
 
-def get_ai_signal():
-    signal = random.choice(["BUY", "SELL"])
+def generate_ai_signal():
+    direction = random.choice(["BUY", "SELL"])
     return {
         "symbol": "BTCUSD",
-        "signal": signal,
-        "lot_size": 0.03,
-        "take_profit": 40,
-        "stop_loss": 20
+        "direction": direction,
+        "volume": 0.03,
+        "sl_pips": 20,
+        "tp_pips": 40
     }
