@@ -1,28 +1,56 @@
 import requests
+import json
 
-ACCESS_TOKEN = "aeb_Sz7NOg_dGtjwV9hfEf2jazhk10kGPKyApuXmE5w"
-ACCOUNT_ID = "5217824"
+# بيانات الحساب والتوكن
+access_token = "aeb_Sz7NOg_dGtjwV9hfEf2jazhk10kGPKyApuXmE5w"
+account_id = 5217824
+symbol = "BTCUSD"
 
-def place_order(symbol, side, volume, sl_pips, tp_pips):
-    base_url = "https://api.spotware.com/connect/trading"
-    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+# رأس الطلب
+headers = {
+    "Authorization": f"Bearer {access_token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
 
-    market_price_url = f"https://api.spotware.com/connect/prices?symbolName={symbol}&accountId={ACCOUNT_ID}"
-    price_res = requests.get(market_price_url, headers=headers).json()
-    price = float(price_res["ask"]) if side == "BUY" else float(price_res["bid"])
+# رابط سعر السوق من Spotware Open API (حسب معرف الحساب والمعرف الرمزي للسوق)
+market_price_url = f"https://api.spotware.com/connect/trading/accounts/{account_id}/symbols/{symbol}/price"
 
-    sl = price - sl_pips * 0.0001 if side == "BUY" else price + sl_pips * 0.0001
-    tp = price + tp_pips * 0.0001 if side == "BUY" else price - tp_pips * 0.0001
+# رابط تنفيذ الأمر
+order_url = "https://api.spotware.com/connect/trading/accounts/{}/orders".format(account_id)
 
-    order_data = {
-        "accountId": ACCOUNT_ID,
-        "symbolName": symbol,
-        "orderType": "MARKET",
-        "side": side,
-        "volume": int(volume * 100000),
-        "takeProfit": {"price": round(tp, 5)},
-        "stopLoss": {"price": round(sl, 5)}
+
+def place_order(direction: str, volume: float, stop_loss_pips: int, take_profit_pips: int):
+    # احصل على السعر الحالي
+    response = requests.get(market_price_url, headers=headers)
+
+    if response.status_code == 200 and response.text.strip():
+        price_res = response.json()
+    else:
+        raise ValueError(f"Invalid response from market price URL: {response.status_code}, content: {response.text}")
+
+    bid = float(price_res["bid"])
+    ask = float(price_res["ask"])
+    price = ask if direction.upper() == "BUY" else bid
+
+    # احسب SL و TP كنقاط
+    point = 0.01  # على حسب الدقة (BTCUSD غالبًا 0.01 أو 0.1)
+    sl = price - stop_loss_pips * point if direction.upper() == "BUY" else price + stop_loss_pips * point
+    tp = price + take_profit_pips * point if direction.upper() == "BUY" else price - take_profit_pips * point
+
+    payload = {
+        "symbol": symbol,
+        "volume": volume,
+        "type": "MARKET",
+        "direction": direction.upper(),
+        "price": price,
+        "stopLoss": round(sl, 2),
+        "takeProfit": round(tp, 2)
     }
 
-    res = requests.post(base_url, headers=headers, json=order_data)
-    return res.json()
+    response = requests.post(order_url, headers=headers, data=json.dumps(payload))
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise ValueError(f"Failed to place order: {response.status_code}, content: {response.text}")
