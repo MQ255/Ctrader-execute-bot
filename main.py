@@ -11,28 +11,30 @@ def send_telegram(msg):
 
 def main():
     signal = generate_ai_signal()
+
     msg = f"""
-🔥 توصية سكالبينغ تلقائية 🎯
+🎯 توصية سكالبينغ تلقائية 🔥
 
 🔹 الزوج: {signal['symbol']}
 🔹 الإتجاه: {signal['direction']}
-🔹 الهدف: {signal['tp_pips']} نقطة
+🔹 نقطة الهدف: {signal['tp_pips']} نقطة
 🔹 الستوب: {signal['sl_pips']} نقطة
 🔹 حجم اللوت: {signal['volume']}
 
 🚀 تنفيذ مباشر الآن...
 """
+
     send_telegram(msg)
 
     result = place_order(
         symbol=signal['symbol'],
-        side=signal['direction'],
+        direction=signal['direction'],
         volume=signal['volume'],
-        sl_pips=signal['sl_pips'],
-        tp_pips=signal['tp_pips']
+        tp_pips=signal['tp_pips'],
+        sl_pips=signal['sl_pips']
     )
 
-    send_telegram(f"تم تنفيذ الصفقة ✅: {result}")
+    send_telegram(f"📈 تم تنفيذ الصفقة بنجاح ✅\nنتيجة التنفيذ:\n{result}")
 
 if __name__ == "__main__":
     main()
