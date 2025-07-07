@@ -1,4 +1,6 @@
-from ai_signal import get_ai_signal as generate_ai_signal
+# main.py
+
+from ai_signal import generate_ai_signal
 from execute_trader import place_order
 import requests
 
@@ -11,30 +13,19 @@ def send_telegram(msg):
 
 def main():
     signal = generate_ai_signal()
-
     msg = f"""
 🎯 توصية سكالبينغ تلقائية 🔥
 
-🔹 الزوج: {signal['symbol']}
-🔹 الإتجاه: {signal['direction']}
-🔹 نقطة الهدف: {signal['tp_pips']} نقطة
-🔹 الستوب: {signal['sl_pips']} نقطة
-🔹 حجم اللوت: {signal['volume']}
+🔷 الزوج: {signal['symbol']}
+🔷 الإتجاه: {signal['direction']}
+🔷 نقطة الهدف: {signal['tp_pips']} نقطة
+🔷 الستوب: {signal['sl_pips']} نقطة
+🔷 حجم اللوت: {signal['volume']}
 
 🚀 تنفيذ مباشر الآن...
 """
-
     send_telegram(msg)
-
-    result = place_order(
-        symbol=signal['symbol'],
-        direction=signal['direction'],
-        volume=signal['volume'],
-        tp_pips=signal['tp_pips'],
-        sl_pips=signal['sl_pips']
-    )
-
-    send_telegram(f"📈 تم تنفيذ الصفقة بنجاح ✅\nنتيجة التنفيذ:\n{result}")
+    place_order(signal)
 
 if __name__ == "__main__":
     main()
