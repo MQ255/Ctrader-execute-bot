@@ -2,7 +2,6 @@ from ai_signal import generate_ai_signal
 from execute_trader import place_order
 import requests
 
-# بيانات تليجرام
 BOT_TOKEN = "8067398934:AAGvw2oAS-0Y5zgDD-1QUI8EbZppWJIb_NQ"
 CHAT_ID = "5956821181"
 
@@ -12,27 +11,24 @@ def send_telegram(msg):
 
 def main():
     signal = generate_ai_signal()
-
     msg = f"""
 🎯 توصية سكالبينغ تلقائية 🔥
 
 🔷 الزوج: {signal['symbol']}
 🔷 الإتجاه: {signal['direction']}
-🔷 نقطة الهدف: {signal['tp_pips']} نقطة
-🔷 الستوب: {signal['sl_pips']} نقطة
+🔷 نقطة الهدف: {signal['tp_pips']} بيب
+🔷 نقطة الستوب: {signal['sl_pips']} بيب
 🔷 حجم اللوت: {signal['volume']}
 
 🚀 تنفيذ مباشر الآن...
 """
     send_telegram(msg)
-
-    # تنفيذ الصفقة فعليًا على cTrader
     place_order(
-        signal["symbol"],
-        signal["direction"],
-        signal["volume"],
-        signal["tp_pips"],
-        signal["sl_pips"]
+        signal['symbol'],
+        signal['direction'],
+        signal['volume'],
+        signal['tp_pips'],
+        signal['sl_pips']
     )
 
 if __name__ == "__main__":
