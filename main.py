@@ -14,15 +14,15 @@ def main():
     msg = f"""
 🎯 توصية سكالبينغ تلقائية 🔥
 
-🔷 الزوج: {signal['symbol']}
-🔷 الإتجاه: {signal['direction']}
-🔷 نقطة الهدف: {signal['tp_pips']} بيب
-🔷 نقطة الستوب: {signal['sl_pips']} بيب
-🔷 حجم اللوت: {signal['volume']}
+📊 الزوج: {signal['symbol']}
+🔁 الإتجاه: {signal['direction']}
+📈 الهدف: {signal['tp_pips']} نقطة
+📉 وقف الخسارة: {signal['sl_pips']} نقطة
+💰 الحجم: {signal['volume']} لوت
+    """
 
-🚀 تنفيذ مباشر الآن...
-"""
     send_telegram(msg)
+
     place_order(
         signal['symbol'],
         signal['direction'],
