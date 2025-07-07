@@ -5,15 +5,15 @@ import requests
 ACCESS_TOKEN = "aeb_Sz7NOg_dGtjwV9hfEf2jazhk10kGPKyApuXmE5w"
 ACCOUNT_ID = "5217824"
 
-def place_order(signal):
-    url = "https://live.ctraderapi.com/v1/accounts/{}/orders/market".format(ACCOUNT_ID)
+def place_order(symbol, direction, volume, tp_pips, sl_pips):
+    url = f"https://live.ctraderapi.com/v1/accounts/{ACCOUNT_ID}/orders/market"
     
     data = {
-        "symbol": signal["symbol"],
-        "volume": int(signal["volume"] * 100000),  # تحويل الحجم إلى وحدة السيرفر
-        "side": "BUY" if signal["direction"] == "BUY" else "SELL",
-        "takeProfitInPips": signal["tp_pips"],
-        "stopLossInPips": signal["sl_pips"]
+        "symbol": symbol,
+        "volume": int(volume * 100000),
+        "side": "BUY" if direction == "BUY" else "SELL",
+        "takeProfitInPips": tp_pips,
+        "stopLossInPips": sl_pips
     }
 
     headers = {
