@@ -1,11 +1,16 @@
 import random
 
-def get_ai_signal():
+def generate_ai_signal():
+    symbol = "BTCUSD"
     direction = random.choice(["BUY", "SELL"])
+    tp_pips = 40
+    sl_pips = 20
+    volume = 0.03  # لكل 100 دولار
+
     return {
-        "symbol": "BTCUSD",         # زوج التداول
-        "signal": direction,        # اتجاه الصفقة
-        "lot_size": 0.03,           # حجم اللوت
-        "stop_loss": 20,            # وقف الخسارة بالنقاط
-        "take_profit": 40           # الهدف بالنقاط
+        "symbol": symbol,
+        "direction": direction,
+        "tp_pips": tp_pips,
+        "sl_pips": sl_pips,
+        "volume": volume
     }
