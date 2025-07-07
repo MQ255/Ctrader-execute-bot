@@ -3,7 +3,7 @@ import random
 def generate_ai_signal():
     symbol = "BTCUSD"
     direction = random.choice(["BUY", "SELL"])
-    volume = 0.03  # ثابت لكل 100$
+    volume = 0.03  # حجم الصفقة لكل 100$
     tp_pips = 40
     sl_pips = 20
 
