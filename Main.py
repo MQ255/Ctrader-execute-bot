@@ -2,8 +2,8 @@ from ai_signal import generate_ai_signal
 from execute_trader import place_order
 import requests
 
-BOT_TOKEN = "8067398934:AAGvw2oAS-0Y5zgDD-1QUI8EbZppWJIb_NQ"
-CHAT_ID = "5956821181"
+BOT_TOKEN = "توكن البوت"
+CHAT_ID = "معرف الدردشة"
 
 def send_telegram(msg):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -11,15 +11,15 @@ def send_telegram(msg):
 
 def main():
     signal = generate_ai_signal()
-    msg = f"""🔥 توصية سكالبينغ تلقائية 🎯
+    msg = f"""
+🔥 توصية سكالبينغ تلقائية 🧠
+🔹 الزوج: {signal['symbol']}
+🔹 الاتجاه: {signal['direction']}
+🔹 الهدف: {signal['tp_pips']} نقطة
+🔹 وقف الخسارة: {signal['sl_pips']} نقطة
+🔹 اللوت: {signal['volume']}
 
-📊 الزوج: {signal['symbol']}
-📈 الاتجاه: {signal['direction']}
-🎯 الهدف: {signal['tp_pips']} نقطة
-🛑 الوقف: {signal['sl_pips']} نقطة
-💰 حجم اللوت: {signal['volume']}
-
-🚀 تنفيذ مباشر الآن...
+🚀 تنفيذ مباشر...
 """
     send_telegram(msg)
 
