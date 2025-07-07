@@ -1,4 +1,4 @@
-from ai_signal import generate_ai_signal
+from ai_signal import get_ai_signal as generate_ai_signal
 from execute_trader import place_order
 import requests
 
