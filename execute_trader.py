@@ -1,22 +1,32 @@
 import requests
 
 ACCESS_TOKEN = "aeb_Sz7NOg_dGtjwV9hfEf2jazhk10kGPKyApuXmE5w"
-ACCOUNT_ID = "5217824"
+ACCOUNT_ID = 5217824
+API_URL = "https://api.ctrader.com/connect/trading-api/rest/order"  # ✅ عدل حسب عنوان Spotware الرسمي الصحيح
 
 def place_order(symbol, direction, volume, tp_pips, sl_pips):
-    url = "https://api.spotware.com/connect/trading/accounts/{}/orders/market".format(ACCOUNT_ID)
     headers = {
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
 
-    data = {
+    # مثال افتراضي: تحويل الاتجاه إلى نوع أمر
+    order_type = "BUY" if direction == "BUY" else "SELL"
+
+    payload = {
+        "accountId": ACCOUNT_ID,
         "symbol": symbol,
-        "direction": direction,
+        "orderType": order_type,
         "volume": volume,
-        "tp_pips": tp_pips,
-        "sl_pips": sl_pips
+        "takeProfit": tp_pips,
+        "stopLoss": sl_pips
     }
 
-    response = requests.post(url, headers=headers, json=data)
-    print("Order Response:", response.text)
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+
+        print("✅ Order placed successfully:", response.json())
+    except requests.exceptions.RequestException as e:
+        print("❌ Order failed:", e)
+        print("Response content:", response.text)
