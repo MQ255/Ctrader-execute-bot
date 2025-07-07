@@ -5,7 +5,7 @@ def generate_ai_signal():
     direction = random.choice(["BUY", "SELL"])
     tp_pips = 40
     sl_pips = 20
-    volume = 0.03  # لكل 100 دولار
+    volume = 0.03
 
     return {
         "symbol": symbol,
