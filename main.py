@@ -1,9 +1,9 @@
-from ai_signal import generate_signal
-from execute_trader import execute_order
+from ai_signal import get_ai_signal
+from execute_trader import execute_trade
 
-# توليد توصية الذكاء الاصطناعي (BUY أو SELL)
-signal = generate_signal()
+# 1. احصل على توصية الذكاء الاصطناعي (BUY أو SELL)
+signal = get_ai_signal()
 print(f"🔍 توصية الذكاء الاصطناعي: {signal}")
 
-# تنفيذ الصفقة على cTrader
-execute_order(signal)
+# 2. نفّذ الصفقة تلقائيًا
+execute_trade(signal)
